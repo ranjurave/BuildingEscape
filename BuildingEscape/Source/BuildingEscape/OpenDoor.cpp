@@ -2,6 +2,8 @@
 
 
 #include "OpenDoor.h"
+#include "Engine/World.h"
+#include "GameFramework/PlayerController.h"
 #include "Gameframework/Actor.h"
 
 
@@ -21,21 +23,33 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FRotator NewRotator = FRotator(0.f, 260.f, 0.f);
-	AActor* Owner;
 	Owner = GetOwner();
-	Owner->SetActorRotation(NewRotator);
-
-	FString DName = GetOwner()->GetName();
-	UE_LOG(LogTemp, Warning, TEXT("Name is %s"), *DName);
+	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 }
-
 
 // Called every frame
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	if (PressurePlate->IsOverlappingActor(ActorThatOpens))
+	{
+		OpenDoor();
+		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
+	}
+	if ((GetWorld()->GetTimeSeconds() - LastDoorOpenTime)>DoorCloseDelay)
+	{
+		CloseDoor();
+	}
+
 }
 
+void UOpenDoor::OpenDoor()
+{
+	Owner->SetActorRotation(FRotator(0.f, OpenAngle, 0.f));
+}
+
+void UOpenDoor::CloseDoor()
+{
+	Owner->SetActorRotation(FRotator(0.f, CloseAngle, 0.f));
+}
