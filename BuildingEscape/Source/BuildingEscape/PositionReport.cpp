@@ -20,11 +20,13 @@ UPositionReport::UPositionReport()
 void UPositionReport::BeginPlay()
 {
 	Super::BeginPlay();
-
-	FString SName = GetOwner()->GetName();
+	//AActor *Player = GetOwner();
+	//FString NameS = Player->GetName();
+	//FString SName = GetOwner()->GetName();
 	//FString SName = _
-	FString SPos = GetOwner()->GetActorLocation().ToString();
-	UE_LOG(LogTemp, Warning, TEXT("%s is at %s"), *SName, *SPos);
+	//FString SPos = GetOwner()->GetActorLocation().ToString();
+	//UE_LOG(LogTemp, Warning, TEXT("%s is thallee at %s"), *SName, *SPos);
+	//UE_LOG(LogTemp, Warning, TEXT("asdfasasf"));
 }
 
 
