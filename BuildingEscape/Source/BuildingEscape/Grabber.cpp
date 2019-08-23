@@ -5,6 +5,7 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "Gameframework/Actor.h"
+#include "DrawDebugHelpers.h"
 #define OUT
 
 // Sets default values for this component's properties
@@ -37,11 +38,15 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	FVector PlayerViewPointLocation;
 	FRotator PlayerViewPointRotation;
 
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
+	//GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
 
 	// log out to test
 
-	UE_LOG(LogTemp, Warning, TEXT("Location is %s and Rotation is %s"), *PlayerViewPointLocation.ToString(), *PlayerViewPointRotation.ToString())
+	FVector LineTraceEnd = PlayerViewPointLocation + FVector(0.f, 0.f, 100.f);
+
+	DrawDebugLine(GetWorld(), PlayerViewPointLocation, LineTraceEnd, FColor(255, 0, 0), false, 0.f, 0.f, 50.f);
+
+	//UE_LOG(LogTemp, Warning, TEXT("Location is %s and Rotation is %s"), *PlayerViewPointLocation.ToString(), *PlayerViewPointRotation.ToString())
 	// ray cast out to reach distatance
 
 	// see what we hit
