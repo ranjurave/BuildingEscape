@@ -24,8 +24,37 @@ void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("Grabber reporting sdfasfsfsafaffor duty!"));
+	FindPhysicsHandleComponent();
 	
+	SetupInputComponent();
+
+}
+
+///Look for attached physics handle
+void UGrabber::FindPhysicsHandleComponent()
+{
+	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if (PhysicsHandle)
+	{
+
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s is missing Physics Handle"), *GetOwner()->GetName());
+	}
+}
+
+	///Look for attached input component
+void UGrabber::SetupInputComponent()
+{
+	InputComp = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (InputComp)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Found Input Comp"));
+		InputComp->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+
+		InputComp->BindAction("Grab", IE_Released, this, &UGrabber::Released);
+	}
 }
 
 
@@ -34,17 +63,34 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+
+}
+
+void UGrabber::Grab()
+{
+	GetFirstPhysicsBodyInReach();
+	UE_LOG(LogTemp, Warning, TEXT("Grab pressed"));
+}
+
+void UGrabber::Released()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Release pressed"));
+}
+
+const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
+{
+
 	/// get player view point
 	FVector PlayerViewPointLocation;
 	FRotator PlayerViewPointRotation;
 
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
-	
+
 	/// log out to test
 
 
 	FVector LineTraceEnd;
-	LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector()*Reach; 
+	LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector()*Reach;
 
 	DrawDebugLine(GetWorld(), PlayerViewPointLocation, LineTraceEnd, FColor(255, 0, 0), false, 0.f, 0.f, 10.f);
 
@@ -52,20 +98,18 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
 	FHitResult Hit;
-	GetWorld()->LineTraceSingleByObjectType(
-		OUT Hit,
+	GetWorld()->LineTraceSingleByObjectType(OUT Hit,
 		PlayerViewPointLocation,
-		LineTraceEnd, 
+		LineTraceEnd,
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
 		TraceParameters
 	);
 
-	/// see what we hit
-
+	/// see what we hit (test)
 	AActor* HitActor = Hit.GetActor();
 	if (HitActor)
 	{
-	UE_LOG(LogTemp, Warning, TEXT("Line trace hit : %s"), *(HitActor->GetName()))
+		UE_LOG(LogTemp, Warning, TEXT("Line trace hit : %s "), *(HitActor->GetName()))
 	}
+	return FHitResult();
 }
-
