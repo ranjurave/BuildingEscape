@@ -68,8 +68,20 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 void UGrabber::Grab()
 {
-	GetFirstPhysicsBodyInReach();
 	UE_LOG(LogTemp, Warning, TEXT("Grab pressed"));
+	/// Line trace and see if we reach any actor with physics body collision channel set
+	auto HitResult = GetFirstPhysicsBodyInReach();
+	auto ComponentToGrab = HitResult.GetComponent();
+	auto ActorHit = HitResult.GetActor();
+
+	if (ActorHit)
+	{
+		PhysicsHandle->GrabComponentAtLocation(
+			ComponentToGrab,
+			NAME_None,
+			ComponentToGrab->GetOwner()->AgetActorLocation()
+		);
+	}
 }
 
 void UGrabber::Released()
@@ -111,5 +123,5 @@ const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Line trace hit : %s "), *(HitActor->GetName()))
 	}
-	return FHitResult();
+	return Hit;
 }
