@@ -13,3 +13,6 @@
 # Visual Studio Generated files #
 #################################
 *.VC.db
+*.suo
+*.VC.opendb
+*.sln
