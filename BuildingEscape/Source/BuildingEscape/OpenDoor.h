@@ -27,6 +27,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	// return total mass in kilograms
+	float GetTotalMassOfActorsOnPlate();
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -40,6 +42,6 @@ private:
 	float DoorCloseDelay = 0.5f;
 	float LastDoorOpenTime;
 	
-	AActor* ActorThatOpens;
 	AActor* Owner;
+
 };
